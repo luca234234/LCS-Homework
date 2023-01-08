@@ -1,5 +1,5 @@
 import re
-from utils import negate, calcuate
+from utils import negate, calcuate, parse_variables, parse_prop
 
 
 def is_prop(prop):
@@ -37,3 +37,11 @@ def compute(prop, interp):
                 char = negate(part[2])
                 prop = re.sub("\(¬[01]\)", char, prop, 1)
     return prop
+
+def truth_table(prop):
+    variables = parse_variables(prop)
+    propositions = parse_prop(prop)
+    for i in variables:
+        print(i, end=" ")
+    for i in propositions:
+        print(propositions[i].full_prop, end=" ")
