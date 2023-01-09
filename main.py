@@ -36,7 +36,11 @@ def compute(prop, interp):
             if re.fullmatch("\(¬[01]\)", part):
                 char = negate(part[2])
                 prop = re.sub("\(¬[01]\)", char, prop, 1)
-    return prop
+    if prop == '1':
+        print('True')
+    else:
+        print('False')
+
 
 def truth_table(prop):
     variables = parse_variables(prop)
