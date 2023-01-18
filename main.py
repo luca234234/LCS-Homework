@@ -91,14 +91,20 @@ def consequence(first, second):
     second_offset = floor(len(second) / 2)
     second_end = ceil(len(second) / 2) - 1
     prop_consequence = 0
+    not_consequence = False
     for temp_intp in all_combiantions(variables):
         first_values = [compute(i, temp_intp) for i in first]
         second_value = compute(second, temp_intp)
         for i in range(len(first_values)):
             print(' ' * first_offsets[i], first_values[i], ' ' * first_end[i], sep="", end=" ")
         print(' ' * second_offset, second_value, ' ' * second_end, sep="")
-        if prod(first_values) * second_value == 1:
-            prop_consequence = 1
+        if prod(first_values) == 1:
+            if second_value == 0:
+                not_consequence = True
+            else:
+                prop_consequence = 1
+    if not_consequence:
+        return 0
     return prop_consequence
 
 
