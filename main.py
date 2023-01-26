@@ -180,33 +180,42 @@ def convert_nnf(prop, print=True):
     return result
 
 
-def convert_xnf(prop, char):
+def convert_xnf(master_prop, char):
     if char == "∧":
-        op_char = "∨"
+        opposite_char = "∨"
     else:
-        op_char = "∧"
-    prop = convert_nnf(prop, print=False)
-    variables = parse_variables(prop)
+        opposite_char = "∧"
+    master_prop = convert_nnf(master_prop, print=False)
+    variables = parse_variables(master_prop)
     for i in variables:
-        prop = prop.replace(i, i + i)
-    propositions = parse_prop_adv(prop)
+        master_prop = master_prop.replace(i, i + i)
+    propositions = parse_prop_adv(master_prop)
     change = 1
     while change:
         change = 0
-        for i in propositions.values():
-            if i.raw_prop[3] == op_char and i.rep_list:
-                for rep in i.rep_list:
+        for current_prop in propositions.values():
+            current_char = current_prop.raw_prop[3]
+            if current_char == opposite_char and current_prop.rep_list:
+                for rep in current_prop.rep_list:
                     if change == 0:
                         sub_prop = propositions[rep].raw_prop
                         if char in sub_prop:
-                            if rep == i.raw_prop[4:6]:
-                                propositions[i.rep_list[0]].raw_prop = "((" + sub_prop[1:3] + op_char + i.raw_prop[1:3] + f"){char}(" + sub_prop[4:6] + op_char + i.raw_prop[1:3] + "))"
+                            if rep == current_prop.raw_prop[4:6]:
+                                propositions[rep].raw_prop = "((" + sub_prop[1:3] + opposite_char + current_prop.raw_prop[1:3] + f"){char}(" + sub_prop[4:6] + opposite_char + current_prop.raw_prop[1:3] + "))"
                             else:
-                                propositions[i.rep_list[0]].raw_prop = "((" + sub_prop[1:3] + op_char + i.raw_prop[4:6] + f"){char}(" + sub_prop[4:6] + op_char + i.raw_prop[4:6] + "))"
-                            i.raw_prop = rep
+                                propositions[rep].raw_prop = "((" + sub_prop[1:3] + opposite_char + current_prop.raw_prop[4:6] + f"){char}(" + sub_prop[4:6] + opposite_char + current_prop.raw_prop[4:6] + "))"
+                            current_prop.raw_prop = rep
                             propositions[rep].renew_full(propositions)
                             change = 1
-            i.renew_full(propositions)
+            current_prop.renew_full(propositions)
         result = list(propositions.values())[-1].full_prop
         propositions = parse_prop_adv(result)
+    for i in variables:
+        result = result.replace(i+i, i)
+        # ... (to be continued)
+        result = result.replace(f"(¬{i})", f"¬{i}")
+        result = result.replace(f"(¬{i}∧¬{i})", f"¬{i}")
+        result = result.replace(f"({i}∧{i})", f"{i}")
+        result = result.replace(f"(¬{i}∨¬{i})", f"¬{i}")
+        result = result.replace(f"({i}∨{i})", f"{i}")
     return result

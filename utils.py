@@ -61,6 +61,7 @@ class Prop:
 
     def renew_full(self, all_prop):
         prop = self.raw_prop
+        self.rep_list = re.findall("[a-z][0-9]", self.raw_prop)
         for rep in self.rep_list:
             prop = prop.replace(rep, all_prop[rep].full_prop)
         self.full_prop = prop
@@ -116,3 +117,7 @@ def parse_prop_adv(prop):
             all_prop[p_not] = obj_part
             prop = prop.replace(valid_part, p_not, 1)
     return all_prop
+
+# def hydrate(prop):
+#     for rep in rep_list:
+#         prop = prop.replace(rep, all_prop[rep].full_prop)
