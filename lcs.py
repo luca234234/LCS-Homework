@@ -11,17 +11,16 @@ my_parser = argparse.ArgumentParser(prog='lcs', add_help=False)
 my_parser.add_argument('-p', type=str, help='the proposition')
 my_parser.add_argument('-i', help='the interpretation', nargs="*")
 my_parser.add_argument('-t', action="store_true")
-my_parser.add_argument('-compare', type=str)
+my_parser.add_argument('-compare', action="store_true")
 my_parser.add_argument('-f', type=str)
 my_parser.add_argument('-nnf', action="store_true")
 my_parser.add_argument('-dnf', action="store_true")
 my_parser.add_argument('-cnf', action="store_true")
 
 args = my_parser.parse_args()
+
 if args.p:
     raw_prop = args.p.replace(" ",  "")
-elif args.compare:
-    raw_prop = args.compare.replace(" ", "")
 
 check = False
 
